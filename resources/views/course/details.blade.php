@@ -122,7 +122,7 @@
 
     function completeUnitAjax(course_id, unit_id) {
         $.ajax({
-            url: '{{ asset("completeUnit") }}',
+            url: '{{ URL("completeUnit") }}',
             method: 'GET',
             data: {
                 course_id: course_id,
