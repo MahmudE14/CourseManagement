@@ -203,7 +203,7 @@ function registerCourse(id) {
 
 function registerCourseAjax(id) {
     $.ajax({
-        url: '{{ asset("registerInCourse") }}',
+        url: '{{ URL("registerInCourse") }}',
         method: 'GET',
         data: { course_id: id },
         success: data => {
