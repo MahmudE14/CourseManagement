@@ -12,8 +12,9 @@ you can follow the **installation guideline** below:
     - Set `DB_DATABASE` to your hosting database name
     - Set `DB_USERNAME` to your `username` associated with the database
     - Set `DB_PASSWORD` to your `password` associated with the database
-- Run this commnd in your terminal `php artisan migrate:refresh`
+- Run this commnd in your terminal `php artisan migrate`
 - Then run the following in the terminal `php artisan db:seed`
+- Then generate the key by running this command in terminal `php artisan key:generate`
 
 #### Admin credentials
 - Login link: `{YOUR_DOMAIN}/login`
