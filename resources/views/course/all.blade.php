@@ -203,19 +203,29 @@ function registerCourse(id) {
 
 function registerCourseAjax(id) {
     $.ajax({
-        url: '{{ asset("registerInCourse") }}',
+        url: '{{ URL("registerInCourse") }}',
         method: 'GET',
         data: { course_id: id },
         success: data => {
             if (data.status === 'success') {
                 alertify.success('Success');
                 setTimeout(() => location.href = '{{ URL("myCourses") }}', 1000);
+            } else if (data.status === 'error' && data.type == 'NO_UNIT') {
+                alertify.alert("Empty Course!", function(){
+                    alertify.message('The course has no units associated with it. Please try again later.');
+                });
             } else {
                 alertify.error('An error occurred!');
             }
         },
         error: err => {
-            alertify.error('An error occurred!');
+            if (err.responseJSON.status === 'error' && err.responseJSON.type == 'NO_UNIT') {
+                alertify.alert("Empty Course!", 'The course has no units associated with it. Please try again later.', function(){
+                    alertify.message('The course has no units associated with it. Please try again later.');
+                });
+            } else {
+                alertify.error('An error occurred!');
+            }
         }
     });
 }

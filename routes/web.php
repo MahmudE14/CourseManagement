@@ -33,14 +33,12 @@ Route::group( ['middleware' => ['auth']], function() {
     Route::get('completeUnit', 'UnitController@completeUnit');
 
     Route::group( ['middleware' => ['admin']], function() {
-        Route::get('admin', function () {
-            Route::post('courses', 'CourseController@store');
-            Route::put('courses', 'CourseController@update');
-            Route::delete('courses', 'CourseController@destroy');
+        Route::post('courses', 'CourseController@store');
+        Route::put('courses', 'CourseController@update');
+        Route::delete('courses', 'CourseController@destroy');
 
-            Route::post('units', 'UnitController@store');
-            Route::put('units', 'UnitController@update');
-            Route::delete('units', 'UnitController@destroy');
-        });
+        Route::post('units', 'UnitController@store');
+        Route::put('units', 'UnitController@update');
+        Route::delete('units', 'UnitController@destroy');
     });
 });

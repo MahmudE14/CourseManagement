@@ -129,7 +129,7 @@ class UnitController extends Controller
     {
         return response()->json([
             'status' => 'success',
-            'data' => Unit::select('*')->with(['course', 'files'])->toArray()
+            'data' => $unit->toArray()
         ], 200);
     }
 

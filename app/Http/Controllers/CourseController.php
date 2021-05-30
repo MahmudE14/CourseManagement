@@ -67,13 +67,6 @@ class CourseController extends Controller
                                         ->pluck('present_unit_id')
                                         ->toArray();
 
-        // dd(
-        //     UsersCourseUnit::where('course_id', $course->id)
-        //                     ->where('user_id', Auth::user()->id)
-        //                     ->get()->pluck('present_unit_id')->toArray()
-        // );
-
-
         return view('course.details', compact('course', 'completedUnits'));
     }
 
@@ -215,7 +208,16 @@ class CourseController extends Controller
             ]);
 
             $unit = Unit::where('course_id', $request->course_id)->first();
-            $unit_id = $unit ? $unit->id : 1;
+
+            if (! $unit) {
+                return response()->json([
+                    'status' => 'error',
+                    'type' => 'NO_UNIT',
+                    'messege' => 'No unit yet!'
+                ], 500);
+            }
+
+            $unit_id = $unit->id;
 
             $user_course_unit = UsersCourseUnit::create([
                 'user_id' => Auth::user()->id,

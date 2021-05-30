@@ -42,17 +42,26 @@
                     <td>{{ $unit->code }}</td>
                     <td>{{ $unit->description }}</td>
                     <td>
-                        @if ($unit->files && count($unit->files))
-                            @foreach ($unit->files as $file)
-                            <a href="{{ asset($file->location) }}" download="{{ $file->title }}.pdf">{{ $file->title  }}</a>
-                            @endforeach
+                        @if (isset($new_unit) && $new_unit)
+                            @if ($unit->files && count($unit->files))
+                                @foreach ($unit->files as $file)
+                                <a href="{{ asset($file->location) }}" download="{{ $file->title }}.pdf">{{ $file->title  }}</a>
+                                @endforeach
+                            @else
+                            <span>No File</span>
+                            @endif
                         @else
-                        <span>No File</span>
+                        <span>No File Yet</span>
                         @endif
                     </td>
                     @if(!in_array($unit->id, $completedUnits))
                     <td>
+                        @if ((isset($new_unit) && $new_unit) || count($completedUnits) == 1)
+                        <button class="btn btn-sm btn-info" onclick="unitDetails({{ $unit->id }})">Details</button>
                         <button class="btn btn-success btn-sm" onclick="completeUnit({{ $course->id }}, {{ $unit->id }})">Complete</button>
+                        @endif
+
+                        @php $new_unit = false; @endphp
                     </td>
                     @else
                     <td>
@@ -60,6 +69,11 @@
                     </td>
                     @endif
                 </tr>
+                @php
+                if ($unit->id == max($completedUnits)){
+                    $new_unit = true;
+                }
+                @endphp
                 @endforeach
             </tbody>
         </table>
@@ -67,6 +81,34 @@
     </div>
 </div>
 @endif
+
+{{-- course details modal --}}
+<div class="modal fade bd-example-modal-lg" id="unit_details_modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="unit_details_modal_title" class="modal-title">Course Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-8 p-5 mx-auto">
+                                <h3 id="unit_details_title" class="mt-2"></h3>
+                                <h6 class="text-disabled mt-0 mb-4">Course Code: <strong id="unit_details_code"></strong></h6>
+                                <strong class="mb-3">Details:</strong>
+                                <p id="unit_details_description" class="pl-2"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection
 
@@ -122,7 +164,7 @@
 
     function completeUnitAjax(course_id, unit_id) {
         $.ajax({
-            url: '{{ asset("completeUnit") }}',
+            url: '{{ URL("completeUnit") }}',
             method: 'GET',
             data: {
                 course_id: course_id,
@@ -140,6 +182,18 @@
                 alertify.error('An error occurred!');
             }
         });
+    }
+
+    function unitDetails (id) {
+        $.get('{{ URL("units") }}/' + id).then(res => {
+            console.log(res.data);
+            $('#unit_details_modal_title').html(res.data.title);
+            $('#unit_details_title').text(res.data.title);
+            $('#unit_details_code').text(res.data.code);
+            $('#unit_details_description').text(res.data.description);
+        });
+
+        $('#unit_details_modal').modal('show');
     }
 </script>
 @endsection
